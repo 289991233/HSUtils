@@ -1,2 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.huisou.library" />
+    package="com.huisou.library">
+
+    <application>
+        <activity
+            android:name=".user_protocol.WebActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+    </application>
+</manifest>
