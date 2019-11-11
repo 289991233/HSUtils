@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     public void show(View view) {
         ProtocolHandler.Builder builder = new ProtocolHandler.Builder(this);
         builder.setAppName(getString(R.string.app_name)).setBtnColor(Color.RED)
+                .setPrivacyLink("https://hsim.huisou.cn/app/#/kefu/agreement")
+                .setProtocolLink("https://www.huisou.cn/agreement.html")
                 .setLinkColor(Color.RED).setListener(new ProtocolHandler.Params.Callback() {
             @Override
             public void onAgree() {
