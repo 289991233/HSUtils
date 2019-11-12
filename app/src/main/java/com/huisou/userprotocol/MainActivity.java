@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.huisou.library.user_protocol.ProtocolHandler;
+import com.huisou.library.user_protocol.ProtocolTipView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ProtocolTipView tipView = findViewById(R.id.tip);
+        tipView.init(Color.RED, "https://hsim.huisou.cn/app/#/kefu/agreement", "https://www.huisou.cn/agreement.html");
     }
 
     public void show(View view) {
