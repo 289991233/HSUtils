@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <application>
         <activity
-            android:name=".user_protocol.WebActivity"
+            android:name=".user_protocol.SimpleWebActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
 </manifest>

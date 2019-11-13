@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Process;
 import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -17,7 +16,6 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.huisou.library.R;
@@ -52,7 +50,7 @@ public class ProtocolHandler {
             @Override
             public void onClick(@NonNull View widget) {
                 //使用协议
-                Intent intent = new Intent(context, WebActivity.class);
+                Intent intent = new Intent(context, SimpleWebActivity.class);
                 intent.putExtra("title", "用户使用协议");
                 intent.putExtra("url", params.protocolLink);
                 context.startActivity(intent);
@@ -67,7 +65,7 @@ public class ProtocolHandler {
             @Override
             public void onClick(@NonNull View widget) {
                 //隐私政策
-                Intent intent = new Intent(context, WebActivity.class);
+                Intent intent = new Intent(context, SimpleWebActivity.class);
                 intent.putExtra("title", "隐私协议");
                 intent.putExtra("url", params.privacyLink);
                 context.startActivity(intent);

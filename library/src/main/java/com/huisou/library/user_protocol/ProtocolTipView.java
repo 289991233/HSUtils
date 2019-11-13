@@ -27,7 +27,7 @@ public class ProtocolTipView extends LinearLayout {
         userAgreement.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), WebActivity.class);
+                Intent intent = new Intent(getContext(), SimpleWebActivity.class);
                 intent.putExtra("title", "用户协议");
                 intent.putExtra("url", userAgreementLink);
                 getContext().startActivity(intent);
@@ -40,7 +40,7 @@ public class ProtocolTipView extends LinearLayout {
         privacyPolicy.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), WebActivity.class);
+                Intent intent = new Intent(getContext(), SimpleWebActivity.class);
                 intent.putExtra("title", "隐私协议");
                 intent.putExtra("url", privacyLink);
                 getContext().startActivity(intent);
