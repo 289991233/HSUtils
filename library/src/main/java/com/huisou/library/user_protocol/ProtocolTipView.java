@@ -22,7 +22,7 @@ public class ProtocolTipView extends LinearLayout {
     }
 
     public void init(int color, final String userAgreementLink, final String privacyLink) {
-        TextView userAgreement = findViewById(R.id.user_agreement);
+        TextView userAgreement = (TextView) findViewById(R.id.user_agreement);
         userAgreement.setTextColor(color);
         userAgreement.setOnClickListener(new OnClickListener() {
             @Override
@@ -35,7 +35,7 @@ public class ProtocolTipView extends LinearLayout {
         });
 
 
-        TextView privacyPolicy = findViewById(R.id.privacy_policy);
+        TextView privacyPolicy = (TextView) findViewById(R.id.privacy_policy);
         privacyPolicy.setTextColor(color);
         privacyPolicy.setOnClickListener(new OnClickListener() {
             @Override

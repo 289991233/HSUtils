@@ -35,8 +35,8 @@ public class ProtocolHandler {
         }
         dialog.setContentView(R.layout.dialog_privacy_desc);
         dialog.setCancelable(false);
-        TextView tvTitle = dialog.findViewById(R.id.title);
-        TextView tvSubTitle = dialog.findViewById(R.id.sub_title);
+        TextView tvTitle = (TextView) dialog.findViewById(R.id.title);
+        TextView tvSubTitle = (TextView) dialog.findViewById(R.id.sub_title);
 
         final int linkColor = params.linkColor;
         String appName = params.appName;
@@ -79,7 +79,7 @@ public class ProtocolHandler {
         tvTitle.setMovementMethod(LinkMovementMethod.getInstance());
         tvTitle.setText(titleBuild);
         tvSubTitle.setText(String.format(context.getResources().getString(R.string.privacy_sub), appName));
-        TextView tvAgree = dialog.findViewById(R.id.tv_agree);
+        TextView tvAgree = (TextView) dialog.findViewById(R.id.tv_agree);
         tvAgree.setBackgroundColor(params.btnColor);
         tvAgree.setOnClickListener(new View.OnClickListener() {
             @Override
