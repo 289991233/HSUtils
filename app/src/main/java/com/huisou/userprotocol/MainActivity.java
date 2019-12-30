@@ -1,15 +1,17 @@
 package com.huisou.userprotocol;
 
 
-
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Toast;
+import android.widget.ImageView;
 
-import com.huisou.library.user_protocol.ProtocolHandler;
-import com.huisou.library.user_protocol.ProtocolTipView;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.bumptech.glide.Glide;
+import com.huisou.library.banner.BannerView;
+import com.huisou.library.banner.ImageLoader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,20 +19,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ProtocolTipView tipView = findViewById(R.id.tip);
-        tipView.init(Color.RED, "https://hsim.huisou.cn/app/#/kefu/agreement", "https://www.huisou.cn/agreement.html");
+        List<BannerView.BannerData> bannerData = new ArrayList<>();
+        bannerData.add(new BannerView.BannerData("https://hdres.huisou.cn/uploads/1/files/20191113/c1b86bc197c4c073622c16ecb457e8bb.mp4",
+                "https://hdres.huisou.cn/uploads/1/images/20191113/3e7cc14fbb4ca1007623467e8c32d3a5.jpg"));
+
+        bannerData.add(new BannerView.BannerData("https://hdres.huisou.cn/uploads/1/images/20191113/583ad4ccd1b21eb01dac50f639c82002.jpg"));
+        BannerView bannerView = findViewById(R.id.banner);
+        bannerView.setImageLoader(new ImageLoader() {
+            @Override
+            public void loadImage(ImageView target, String url) {
+                Glide.with(MainActivity.this).load(url).into(target);
+            }
+        });
+
+        bannerView.setData(bannerData);
     }
 
-    public void show(View view) {
-        ProtocolHandler.Builder builder = new ProtocolHandler.Builder(this);
-        builder.setAppName(getString(R.string.app_name)).setBtnColor(Color.RED)
-                .setPrivacyLink("https://hsim.huisou.cn/app/#/kefu/agreement")
-                .setProtocolLink("https://www.huisou.cn/agreement.html")
-                .setLinkColor(Color.RED).setListener(new ProtocolHandler.Params.Callback() {
-            @Override
-            public void onAgree() {
-                Toast.makeText(MainActivity.this, "测试通过", Toast.LENGTH_SHORT).show();
-            }
-        }).send();
-    }
 }
