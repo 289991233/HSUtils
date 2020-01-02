@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
                 "https://hdres.huisou.cn/uploads/1/images/20191113/3e7cc14fbb4ca1007623467e8c32d3a5.jpg"));
 
         bannerData.add(new BannerView.BannerData("https://hdres.huisou.cn/uploads/1/images/20191113/583ad4ccd1b21eb01dac50f639c82002.jpg"));
+        bannerData.add(new BannerView.BannerData("https://t8.baidu.com/it/u=3571592872,3353494284&fm=79&app=86&size=h300&n=0&g=4n&f=jpeg?sec=1578533411&t=8e75ad1447376dda8b9addcd3f555e6b"));
         BannerView bannerView = findViewById(R.id.banner);
         bannerView.setImageLoader(new ImageLoader() {
             @Override

@@ -24,22 +24,17 @@ import androidx.viewpager.widget.ViewPager;
 import com.huisou.library.R;
 import com.huisou.library.banner.video.HDVideo;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.jzvd.Jzvd;
 
 /**
- * 描    述：带视频播放banner 暂时只支持用到的功能
- * 创 建 人：范要朋
- * 创建日期：2019/3/18 8:58
- * 邮    箱：1094325366@qq.com
- * 修订历史：
- * 修 改 人：
+ * Describe：带视频播放的无限轮播图
  *
- * @author 范要朋
+ * @author 范要朋[1094325366@qq.com] at 2020/1/2 8:52
  */
-
 public class BannerView extends FrameLayout {
     private ViewPager mPager;
     private int mCurPlayPosition = -1;
@@ -48,8 +43,10 @@ public class BannerView extends FrameLayout {
     private AutoPlayHandler autoPlayHandler;
     private Drawable mIndicatorSelectedShape;
     private Drawable mIndicatorUnselectedShape;
-    private int mCurPagePosition;
     private ImageLoader mImageLoader;
+    private boolean shouldScroll;
+    private List<View> mBannerView;
+    private List<BannerData> mBannerData;
 
     public BannerView(Context context) {
         this(context, null);
@@ -70,9 +67,23 @@ public class BannerView extends FrameLayout {
     }
 
     private static class AutoPlayHandler extends Handler {
+        private BannerView container;
 
-        public AutoPlayHandler(Callback callback) {
-            super(callback);
+        AutoPlayHandler(WeakReference<BannerView> container) {
+            this.container = container.get();
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            if (msg.what == 1) {
+                int count = container.mBannerData.size();
+                int pos = container.mPager.getCurrentItem();
+                pos = pos % (count + 1) + 1;
+                container.mPager.setCurrentItem(pos);
+                sendEmptyMessageDelayed(1, 2500);
+            }
         }
     }
 
@@ -102,12 +113,11 @@ public class BannerView extends FrameLayout {
 
             @Override
             public void onPageSelected(int position) {
-                int count = mPageAdapter.getCount();
-                mCurPagePosition = position;
+                int count = mBannerData.size();
                 if (position == 0 || position == count - 1) {
                     return;
                 }
-                List<View> views = mPageAdapter.getAllView();
+                List<View> views = mBannerView;
                 if (mCurPlayPosition != -1) {
                     HDVideo before = (HDVideo) views.get(mCurPlayPosition);
                     before.pause();
@@ -145,63 +155,66 @@ public class BannerView extends FrameLayout {
 
 
     public void scrollToPosition(int position) {
+        if (position > mBannerData.size()) {
+            throw new IndexOutOfBoundsException(" your position should not lager than count");
+        }
         mPager.setCurrentItem(position + 1);
     }
 
+    private void initView(List<BannerData> data) {
+        if (data == null) {
+            throw new NullPointerException("the data can not be  null");
+        }
+        shouldScroll = data.size() > 1;
+        mBannerView = new ArrayList<>();
+        mBannerData = new ArrayList<>();
+        int size = data.size();
+        if (shouldScroll) {
+            size += 2;
+            for (int i = 0; i < size; i++) {
+                BannerData curData;
+                if (i == 0) {
+                    curData = data.get(data.size() - 1);
+                } else if (i == size - 1) {
+                    curData = data.get(0);
+                } else {
+                    curData = data.get(i - 1);
+                }
+                mBannerData.add(curData);
+            }
+        } else {
+            mBannerData = data;
+        }
+        for (int i = 0; i < mBannerData.size(); i++) {
+            View result;
+            if (mBannerData.get(i).video) {
+                result = new HDVideo(getContext());
+            } else {
+                ImageView imageView = new ImageView(getContext());
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                result = imageView;
+            }
+            mBannerView.add(result);
+        }
+    }
 
     public void setData(final List<BannerData> data) {
+        initView(data);
         Jzvd.resetAllVideos();
-        mPageAdapter = new BannerAdapter(getContext(), data);
+        mPageAdapter = new BannerAdapter();
         mPager.setAdapter(mPageAdapter);
         addIndicator(data.size());
         if (data.size() > 1) {
             mPager.setCurrentItem(1);
-            mCurPagePosition = 1;
         } else {
             updateIndicator(0);
-            mCurPagePosition = 0;
         }
         registerVideoStatus();
-        List<View> views = mPageAdapter.getAllView();
-        for (int i = 0; i < views.size(); i++) {
-            final int finalI = i;
-            View view = views.get(i);
-            if (view instanceof HDVideo && fullScreenClickListener != null) {
-                ((HDVideo) view).setOnFullScreenClickListener(new HDVideo.OnFullScreenClickListener() {
-                    @Override
-                    public void onFullScreenClick(long position) {
-                        fullScreenClickListener.onFullScreenClick(position);
-                    }
-                });
-            }
-            view.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mItemClickListener != null) {
-                        int index = finalI - 1;
-                        if (index < 0) {
-                            index = 0;
-                        }
-                        mItemClickListener.onItemClick(index);
-                    }
-                }
-            });
-        }
         if (autoPlayHandler != null) {
             autoPlayHandler.removeMessages(1);
+        } else {
+            autoPlayHandler = new AutoPlayHandler(new WeakReference<>(this));
         }
-        autoPlayHandler = new AutoPlayHandler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                if (msg.what == 1) {
-                    int count = data.size();
-                    mCurPagePosition = mCurPagePosition % (count + 1) + 1;
-                    mPager.setCurrentItem(mCurPagePosition);
-                    autoPlayHandler.sendEmptyMessageDelayed(1, 2500);
-                }
-                return false;
-            }
-        });
         if (data.size() > 1 && !hasVideo()) {
             autoPlayHandler.sendEmptyMessageDelayed(1, 2500);
         }
@@ -215,6 +228,7 @@ public class BannerView extends FrameLayout {
                     if (autoPlayHandler != null) {
                         autoPlayHandler.removeMessages(1);
                     }
+                    Jzvd.resetAllVideos();
                     owner.getLifecycle().removeObserver(this);
 
                 }
@@ -223,7 +237,7 @@ public class BannerView extends FrameLayout {
     }
 
     private boolean hasVideo() {
-        List<View> views = mPageAdapter.getAllView();
+        List<View> views = mBannerView;
         for (View view : views) {
             if (view instanceof HDVideo) {
                 return true;
@@ -240,7 +254,7 @@ public class BannerView extends FrameLayout {
         if (page < 0 || page > count - 2) {
             return;
         }
-        List<View> views = mPageAdapter.getAllView();
+        List<View> views = mBannerView;
         if (views.size() > 1) {
             views = views.subList(1, views.size() - 1);
         }
@@ -270,7 +284,7 @@ public class BannerView extends FrameLayout {
     }
 
     private void registerVideoStatus() {
-        List<View> views = mPageAdapter.getAllView();
+        List<View> views = mBannerView;
         for (int i = 0; i < views.size(); i++) {
             View view = views.get(i);
             if (view instanceof HDVideo) {
@@ -352,52 +366,10 @@ public class BannerView extends FrameLayout {
     }
 
     private class BannerAdapter extends PagerAdapter {
-        private Context context;
-        private List<BannerData> mData;
-        private List<View> mView;
-        private int originSize;
-
-        BannerAdapter(Context context, List<BannerData> data) {
-            this.context = context;
-            originSize = data.size();
-            int size = originSize + 2;
-            mView = new ArrayList<>(size);
-            mData = new ArrayList<>(size);
-            if (data.size() > 1) {
-                for (int i = 0; i < size; i++) {
-                    BannerData curData;
-                    if (i == 0) {
-                        curData = data.get(data.size() - 1);
-                    } else if (i == size - 1) {
-                        curData = data.get(0);
-                    } else {
-                        curData = data.get(i - 1);
-                    }
-                    mData.add(curData);
-                }
-            } else {
-                mData = data;
-            }
-            for (int i = 0; i < mData.size(); i++) {
-                View result;
-                if (mData.get(i).video) {
-                    result = new HDVideo(context);
-                } else {
-                    ImageView imageView = new ImageView(context);
-                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    result = imageView;
-                }
-                mView.add(result);
-            }
-        }
-
-        List<View> getAllView() {
-            return mView;
-        }
 
         @Override
         public int getCount() {
-            return mView.size();
+            return mBannerView.size();
         }
 
         @Override
@@ -407,21 +379,38 @@ public class BannerView extends FrameLayout {
 
         @NonNull
         @Override
-        public Object instantiateItem(@NonNull ViewGroup container, int position) {
-            View result = mView.get(position % getCount());
+        public Object instantiateItem(@NonNull ViewGroup container, final int position) {
+            View result = mBannerView.get(position);
             if (result instanceof ImageView) {
                 if (mImageLoader != null) {
-                    mImageLoader.loadImage((ImageView) result, mData.get(position).url);
+                    mImageLoader.loadImage((ImageView) result, mBannerData.get(position).url);
                 }
+
+                ImageView imageView = (ImageView) result;
+                imageView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mItemClickListener.onItemClick(position);
+                    }
+                });
             }
-            if (result instanceof HDVideo && position > 0 && position < originSize) {
+            if (result instanceof HDVideo) {
                 HDVideo video = (HDVideo) result;
-                video.setUp(mData.get(position).url, "", Jzvd.SCREEN_NORMAL);
+                video.setUp(mBannerData.get(position).url, "", Jzvd.SCREEN_NORMAL);
                 ImageView thumb = video.thumbImageView;
                 thumb.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 if (mImageLoader != null) {
-                    mImageLoader.loadImage(thumb, mData.get(position).previewUrl);
+                    mImageLoader.loadImage(thumb, mBannerData.get(position).previewUrl);
                 }
+
+                video.setOnFullScreenClickListener(new HDVideo.OnFullScreenClickListener() {
+                    @Override
+                    public void onFullScreenClick(long position) {
+                        if (fullScreenClickListener != null) {
+                            fullScreenClickListener.onFullScreenClick(position);
+                        }
+                    }
+                });
             }
             container.addView(result);
             return result;
