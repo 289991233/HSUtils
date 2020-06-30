@@ -7,10 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+
 import androidx.annotation.NonNull;
+
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.DisplayMetrics;
@@ -29,6 +32,7 @@ public class ProtocolHandler {
     private void show() {
         dialog.show();
     }
+
     public static int getScreenWidth(Context context) {
         WindowManager wm = (WindowManager) context
                 .getSystemService(Context.WINDOW_SERVICE);
@@ -36,6 +40,7 @@ public class ProtocolHandler {
         wm.getDefaultDisplay().getMetrics(outMetrics);
         return outMetrics.widthPixels;
     }
+
     private ProtocolHandler(@NonNull final Context context, final Params params) {
         dialog = new Dialog(context);
         Window window = dialog.getWindow();
@@ -52,7 +57,7 @@ public class ProtocolHandler {
 
         final int linkColor = params.linkColor;
         String appName = params.appName;
-        String title = String.format(context.getResources().getString(R.string.privacy_title), appName, appName);
+        String title = String.format(params.content != null && !TextUtils.isEmpty(params.content) ? params.content : context.getResources().getString(R.string.privacy_title), appName, appName);
         SpannableStringBuilder titleBuild = new SpannableStringBuilder(title);
         String protocol = "《用户使用协议》";
         int protocolStart = title.indexOf(protocol);
@@ -179,6 +184,7 @@ public class ProtocolHandler {
         String appName;
         String protocolLink;
         String privacyLink;
+        String content;
         Callback callback;
 
         public interface Callback {
@@ -212,6 +218,11 @@ public class ProtocolHandler {
 
         public Builder setPrivacyLink(String privacyLink) {
             p.privacyLink = privacyLink;
+            return this;
+        }
+
+        public Builder setContent(String content) {
+            p.content = content;
             return this;
         }
 
