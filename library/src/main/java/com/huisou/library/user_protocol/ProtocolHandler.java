@@ -59,88 +59,90 @@ public class ProtocolHandler {
         String appName = params.appName;
         String title = String.format(params.content != null && !TextUtils.isEmpty(params.content) ? params.content : context.getResources().getString(R.string.privacy_title), appName, appName);
         SpannableStringBuilder titleBuild = new SpannableStringBuilder(title);
-        String protocol = "《用户使用协议》";
-        int protocolStart = title.indexOf(protocol);
-        String privacy = "《用户隐私政策》";
-        int privacyStart = title.indexOf(privacy);
 
-        String Camera = "相机权限";
-        int CameraPermissions = title.indexOf(Camera);
+        if (title.contains("《用户使用协议》")) {
+            String protocol = "《用户使用协议》";
+            int protocolStart = title.indexOf(protocol);
+            String privacy = "《用户隐私政策》";
+            int privacyStart = title.indexOf(privacy);
 
-        String ExternalStorage = "外置存储器权限";
-        int ExternalStoragePermissions = title.indexOf(ExternalStorage);
+            String Camera = "相机权限";
+            int CameraPermissions = title.indexOf(Camera);
 
-        String PreciseLocation = "精确位置信息";
-        int PreciseLocationPermissions = title.indexOf(PreciseLocation);
+            String ExternalStorage = "外置存储器权限";
+            int ExternalStoragePermissions = title.indexOf(ExternalStorage);
 
-        titleBuild.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View widget) {
-                //使用协议
-                Intent intent = new Intent(context, SimpleWebActivity.class);
-                intent.putExtra("title", "用户使用协议");
-                intent.putExtra("url", params.protocolLink);
-                context.startActivity(intent);
-            }
+            String PreciseLocation = "精确位置信息";
+            int PreciseLocationPermissions = title.indexOf(PreciseLocation);
 
-            @Override
-            public void updateDrawState(@NonNull TextPaint ds) {
-                ds.setColor(linkColor);
-            }
-        }, protocolStart, protocolStart + protocol.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            titleBuild.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(@NonNull View widget) {
+                    //使用协议
+                    Intent intent = new Intent(context, SimpleWebActivity.class);
+                    intent.putExtra("title", "用户使用协议");
+                    intent.putExtra("url", params.protocolLink);
+                    context.startActivity(intent);
+                }
 
-        //相机权限
-        titleBuild.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View widget) {
-            }
+                @Override
+                public void updateDrawState(@NonNull TextPaint ds) {
+                    ds.setColor(linkColor);
+                }
+            }, protocolStart, protocolStart + protocol.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            @Override
-            public void updateDrawState(@NonNull TextPaint ds) {
-                ds.setFakeBoldText(true);
-            }
-        }, CameraPermissions, CameraPermissions + Camera.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            //相机权限
+            titleBuild.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(@NonNull View widget) {
+                }
 
-        //外置存储器权限
-        titleBuild.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View widget) {
-            }
+                @Override
+                public void updateDrawState(@NonNull TextPaint ds) {
+                    ds.setFakeBoldText(true);
+                }
+            }, CameraPermissions, CameraPermissions + Camera.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            @Override
-            public void updateDrawState(@NonNull TextPaint ds) {
-                ds.setFakeBoldText(true);
-            }
-        }, ExternalStoragePermissions, ExternalStoragePermissions + ExternalStorage.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        //精确位置信息
-        titleBuild.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View widget) {
-            }
+            //外置存储器权限
+            titleBuild.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(@NonNull View widget) {
+                }
 
-            @Override
-            public void updateDrawState(@NonNull TextPaint ds) {
-                ds.setFakeBoldText(true);
-            }
-        }, PreciseLocationPermissions, PreciseLocationPermissions + PreciseLocation.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                @Override
+                public void updateDrawState(@NonNull TextPaint ds) {
+                    ds.setFakeBoldText(true);
+                }
+            }, ExternalStoragePermissions, ExternalStoragePermissions + ExternalStorage.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            //精确位置信息
+            titleBuild.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(@NonNull View widget) {
+                }
+
+                @Override
+                public void updateDrawState(@NonNull TextPaint ds) {
+                    ds.setFakeBoldText(true);
+                }
+            }, PreciseLocationPermissions, PreciseLocationPermissions + PreciseLocation.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
 
-        titleBuild.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View widget) {
-                //隐私政策
-                Intent intent = new Intent(context, SimpleWebActivity.class);
-                intent.putExtra("title", "隐私协议");
-                intent.putExtra("url", params.privacyLink);
-                context.startActivity(intent);
-            }
+            titleBuild.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(@NonNull View widget) {
+                    //隐私政策
+                    Intent intent = new Intent(context, SimpleWebActivity.class);
+                    intent.putExtra("title", "隐私协议");
+                    intent.putExtra("url", params.privacyLink);
+                    context.startActivity(intent);
+                }
 
-            @Override
-            public void updateDrawState(@NonNull TextPaint ds) {
-                ds.setColor(linkColor);
-            }
-        }, privacyStart, privacyStart + privacy.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
+                @Override
+                public void updateDrawState(@NonNull TextPaint ds) {
+                    ds.setColor(linkColor);
+                }
+            }, privacyStart, privacyStart + privacy.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
 
         tvTitle.setMovementMethod(LinkMovementMethod.getInstance());
         tvTitle.setText(titleBuild);

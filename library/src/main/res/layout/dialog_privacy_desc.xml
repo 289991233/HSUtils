@@ -29,6 +29,7 @@
             android:layout_marginTop="15dp"
             android:lineSpacingExtra="2dp"
             android:paddingLeft="14dp"
+            android:paddingBottom="20dp"
             android:maxHeight="350dp"
             android:paddingRight="14dp"
             android:textColor="#333333" />

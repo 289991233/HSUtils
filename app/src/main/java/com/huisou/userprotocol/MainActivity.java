@@ -37,9 +37,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         bannerView.setData(bannerData);
-//        SharedPreferences preferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = preferences.edit();
-//        editor.putBoolean("HAS_READ_PROTOCOL", false).apply();
+        SharedPreferences preferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("HAS_READ_PROTOCOL", false).apply();
         ProtocolHandler.Builder builder = new ProtocolHandler.Builder(this);
         builder.setAppName(getString(R.string.app_name)).setBtnColor(getResources().getColor(R.color.colorAccent))
                 .setPrivacyLink("https://hdwebapp.huisou.cn/privacyPolicy?appsign=1&project_id=1")
@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAgree() {
             }
         }).send();
+
     }
 
 }
