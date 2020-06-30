@@ -152,7 +152,7 @@ public class ProtocolHandler {
             public void onClick(View v) {
                 SharedPreferences preferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean("HAS_READ_PROTOCOL", true).apply();
+                editor.putBoolean(params.code != null && !TextUtils.isEmpty(params.code) ? params.code : "HAS_READ_PROTOCOL", true).apply();
                 dialog.dismiss();
 
                 Params.Callback callback = params.callback;
@@ -172,9 +172,8 @@ public class ProtocolHandler {
         });
     }
 
-    private static boolean hasReadProtocol(Context context) {
-        Log.e("xx", context.getPackageName());
-        return context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE).getBoolean("HAS_READ_PROTOCOL", false);
+    private static boolean hasReadProtocol(Params params,Context context) {
+        return context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE).getBoolean(params.code != null && !TextUtils.isEmpty(params.code) ? params.code : "HAS_READ_PROTOCOL", false);
     }
 
     public static class Params {
@@ -185,6 +184,8 @@ public class ProtocolHandler {
         String protocolLink;
         String privacyLink;
         String content;
+        String code;
+
         Callback callback;
 
         public interface Callback {
@@ -226,6 +227,11 @@ public class ProtocolHandler {
             return this;
         }
 
+        public Builder setCode(String code) {
+            p.code = code;
+            return this;
+        }
+
         public Builder setListener(Params.Callback callback) {
             p.callback = callback;
             return this;
@@ -237,7 +243,7 @@ public class ProtocolHandler {
         }
 
         public void send() {
-            if (hasReadProtocol(p.context)) {
+            if (hasReadProtocol(p,p.context)) {
                 if (p.callback != null) {
                     p.callback.onAgree();
                 }
