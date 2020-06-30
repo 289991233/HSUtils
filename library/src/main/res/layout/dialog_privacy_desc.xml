@@ -3,8 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp"
     android:orientation="vertical"
     app:cardCornerRadius="10dp"
     app:cardElevation="0dp">
@@ -20,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="用户协议和隐私政策"
+            android:text="温馨提示"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
 
@@ -28,10 +26,11 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:lineSpacingExtra="5dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
+            android:layout_marginTop="15dp"
+            android:lineSpacingExtra="2dp"
+            android:paddingLeft="14dp"
+            android:maxHeight="300dp"
+            android:paddingRight="14dp"
             android:textColor="#333333" />
 
         <TextView
@@ -39,9 +38,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:lineSpacingExtra="5dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
+            android:lineSpacingExtra="2dp"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
             android:textColor="#333333" />
 
         <LinearLayout

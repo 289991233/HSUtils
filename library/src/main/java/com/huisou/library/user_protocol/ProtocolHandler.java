@@ -13,8 +13,11 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 
@@ -26,7 +29,13 @@ public class ProtocolHandler {
     private void show() {
         dialog.show();
     }
-
+    public static int getScreenWidth(Context context) {
+        WindowManager wm = (WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(outMetrics);
+        return outMetrics.widthPixels;
+    }
     private ProtocolHandler(@NonNull final Context context, final Params params) {
         dialog = new Dialog(context);
         Window window = dialog.getWindow();
@@ -34,6 +43,9 @@ public class ProtocolHandler {
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
         dialog.setContentView(R.layout.dialog_privacy_desc);
+        WindowManager.LayoutParams attributes = window.getAttributes();
+        attributes.width = (int) (getScreenWidth(context) * 0.9);
+        window.setAttributes(attributes);
         dialog.setCancelable(false);
         TextView tvTitle = (TextView) dialog.findViewById(R.id.title);
         TextView tvSubTitle = (TextView) dialog.findViewById(R.id.sub_title);
@@ -46,6 +58,16 @@ public class ProtocolHandler {
         int protocolStart = title.indexOf(protocol);
         String privacy = "《用户隐私政策》";
         int privacyStart = title.indexOf(privacy);
+
+        String Camera = "相机权限";
+        int CameraPermissions = title.indexOf(Camera);
+
+        String ExternalStorage = "外置存储器权限";
+        int ExternalStoragePermissions = title.indexOf(ExternalStorage);
+
+        String PreciseLocation = "精确位置信息";
+        int PreciseLocationPermissions = title.indexOf(PreciseLocation);
+
         titleBuild.setSpan(new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
@@ -61,6 +83,43 @@ public class ProtocolHandler {
                 ds.setColor(linkColor);
             }
         }, protocolStart, protocolStart + protocol.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        //相机权限
+        titleBuild.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                ds.setFakeBoldText(true);
+            }
+        }, CameraPermissions, CameraPermissions + Camera.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        //外置存储器权限
+        titleBuild.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                ds.setFakeBoldText(true);
+            }
+        }, ExternalStoragePermissions, ExternalStoragePermissions + ExternalStorage.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        //精确位置信息
+        titleBuild.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                ds.setFakeBoldText(true);
+            }
+        }, PreciseLocationPermissions, PreciseLocationPermissions + PreciseLocation.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+
         titleBuild.setSpan(new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
@@ -76,6 +135,8 @@ public class ProtocolHandler {
                 ds.setColor(linkColor);
             }
         }, privacyStart, privacyStart + privacy.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+
         tvTitle.setMovementMethod(LinkMovementMethod.getInstance());
         tvTitle.setText(titleBuild);
         tvSubTitle.setText(String.format(context.getResources().getString(R.string.privacy_sub), appName));
@@ -107,6 +168,7 @@ public class ProtocolHandler {
     }
 
     private static boolean hasReadProtocol(Context context) {
+        Log.e("xx", context.getPackageName());
         return context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE).getBoolean("HAS_READ_PROTOCOL", false);
     }
 
