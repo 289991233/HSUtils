@@ -60,10 +60,10 @@ public class ProtocolHandler {
         String title = String.format(params.content != null && !TextUtils.isEmpty(params.content) ? params.content : context.getResources().getString(R.string.privacy_title), appName, appName);
         SpannableStringBuilder titleBuild = new SpannableStringBuilder(title);
 
-        if (title.contains("《用户使用协议》")) {
-            String protocol = "《用户使用协议》";
-            int protocolStart = title.indexOf(protocol);
-            String privacy = "《用户隐私政策》";
+        if (title.contains("《隐私权政策》")) {
+//            String protocol = "《用户使用协议》";
+//            int protocolStart = title.indexOf(protocol);
+            String privacy = "《隐私权政策》";
             int privacyStart = title.indexOf(privacy);
 
             String Camera = "相机权限";
@@ -75,21 +75,21 @@ public class ProtocolHandler {
             String PreciseLocation = "精确位置信息";
             int PreciseLocationPermissions = title.indexOf(PreciseLocation);
 
-            titleBuild.setSpan(new ClickableSpan() {
-                @Override
-                public void onClick(@NonNull View widget) {
-                    //使用协议
-                    Intent intent = new Intent(context, SimpleWebActivity.class);
-                    intent.putExtra("title", "用户使用协议");
-                    intent.putExtra("url", params.protocolLink);
-                    context.startActivity(intent);
-                }
-
-                @Override
-                public void updateDrawState(@NonNull TextPaint ds) {
-                    ds.setColor(linkColor);
-                }
-            }, protocolStart, protocolStart + protocol.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            titleBuild.setSpan(new ClickableSpan() {
+//                @Override
+//                public void onClick(@NonNull View widget) {
+//                    //使用协议
+//                    Intent intent = new Intent(context, SimpleWebActivity.class);
+//                    intent.putExtra("title", "用户使用协议");
+//                    intent.putExtra("url", params.protocolLink);
+//                    context.startActivity(intent);
+//                }
+//
+//                @Override
+//                public void updateDrawState(@NonNull TextPaint ds) {
+//                    ds.setColor(linkColor);
+//                }
+//            }, protocolStart, protocolStart + protocol.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             //相机权限
             titleBuild.setSpan(new ClickableSpan() {
@@ -146,7 +146,46 @@ public class ProtocolHandler {
 
         tvTitle.setMovementMethod(LinkMovementMethod.getInstance());
         tvTitle.setText(titleBuild);
-        tvSubTitle.setText(String.format(context.getResources().getString(R.string.privacy_sub), appName));
+        tvSubTitle.setVisibility(title.contains("《隐私权政策》") ? View.VISIBLE : View.GONE);
+        String subTitle = context.getResources().getString(R.string.privacy_sub);
+        SpannableStringBuilder subTitleBuild = new SpannableStringBuilder(subTitle);
+        String subPrivacy = "《隐私权政策》";
+        int subPrivacyStart = subTitle.indexOf(subPrivacy);
+        subTitleBuild.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                //隐私政策
+                Intent intent = new Intent(context, SimpleWebActivity.class);
+                intent.putExtra("title", "隐私协议");
+                intent.putExtra("url", params.privacyLink);
+                context.startActivity(intent);
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                ds.setColor(linkColor);
+            }
+        }, subPrivacyStart, subPrivacyStart + subPrivacy.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+
+        String subProtocol = "《用户使用协议》";
+        int subProtocolStart = subTitle.indexOf(subProtocol);
+        subTitleBuild.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                //使用协议
+                Intent intent = new Intent(context, SimpleWebActivity.class);
+                intent.putExtra("title", "用户使用协议");
+                intent.putExtra("url", params.protocolLink);
+                context.startActivity(intent);
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                ds.setColor(linkColor);
+            }
+        }, subProtocolStart, subProtocolStart + subProtocol.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvSubTitle.setText(subTitleBuild);
         TextView tvAgree = (TextView) dialog.findViewById(R.id.tv_agree);
         tvAgree.setBackgroundColor(params.btnColor);
         tvAgree.setOnClickListener(new View.OnClickListener() {
@@ -174,7 +213,7 @@ public class ProtocolHandler {
         });
     }
 
-    private static boolean hasReadProtocol(Params params,Context context) {
+    private static boolean hasReadProtocol(Params params, Context context) {
         return context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE).getBoolean(params.code != null && !TextUtils.isEmpty(params.code) ? params.code : "HAS_READ_PROTOCOL", false);
     }
 
@@ -245,7 +284,7 @@ public class ProtocolHandler {
         }
 
         public void send() {
-            if (hasReadProtocol(p,p.context)) {
+            if (hasReadProtocol(p, p.context)) {
                 if (p.callback != null) {
                     p.callback.onAgree();
                 }
