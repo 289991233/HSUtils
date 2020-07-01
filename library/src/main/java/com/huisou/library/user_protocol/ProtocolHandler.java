@@ -185,6 +185,7 @@ public class ProtocolHandler {
                 ds.setColor(linkColor);
             }
         }, subProtocolStart, subProtocolStart + subProtocol.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvSubTitle.setMovementMethod(LinkMovementMethod.getInstance());
         tvSubTitle.setText(subTitleBuild);
         TextView tvAgree = (TextView) dialog.findViewById(R.id.tv_agree);
         tvAgree.setBackgroundColor(params.btnColor);
