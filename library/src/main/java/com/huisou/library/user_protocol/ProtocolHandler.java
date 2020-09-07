@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 
@@ -49,7 +50,7 @@ public class ProtocolHandler {
         }
         dialog.setContentView(R.layout.dialog_privacy_desc);
         WindowManager.LayoutParams attributes = window.getAttributes();
-        attributes.width = (int) (getScreenWidth(context) * 0.9);
+        attributes.width = (int) (getScreenWidth(context) * 0.75);
         window.setAttributes(attributes);
         dialog.setCancelable(false);
         TextView tvTitle = (TextView) dialog.findViewById(R.id.title);
@@ -187,8 +188,7 @@ public class ProtocolHandler {
         }, subProtocolStart, subProtocolStart + subProtocol.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvSubTitle.setMovementMethod(LinkMovementMethod.getInstance());
         tvSubTitle.setText(subTitleBuild);
-        TextView tvAgree = (TextView) dialog.findViewById(R.id.tv_agree);
-        tvAgree.setBackgroundColor(params.btnColor);
+        Button tvAgree = (Button) dialog.findViewById(R.id.tv_agree);
         tvAgree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
