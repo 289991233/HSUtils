@@ -17,7 +17,6 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -48,7 +47,7 @@ public class ProtocolHandler {
         if (window != null) {
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
-        dialog.setContentView(R.layout.dialog_privacy_desc);
+        dialog.setContentView(R.layout.dialog_privacy_desc_item);
         WindowManager.LayoutParams attributes = window.getAttributes();
         attributes.width = (int) (getScreenWidth(context) * 0.75);
         window.setAttributes(attributes);
